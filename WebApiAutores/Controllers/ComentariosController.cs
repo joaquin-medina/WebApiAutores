@@ -87,10 +87,13 @@ namespace WebApiAutores.Controllers
             }
 
             var comentario = mapper.Map<Comentario>(comentarioCreacionDTO);
+
             comentario.Id = id;
             comentario.LibroId = libroId;
+
             context.Update(comentario);
             await context.SaveChangesAsync();
+
             return NoContent();
         }
     }
