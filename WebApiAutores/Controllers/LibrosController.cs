@@ -29,6 +29,11 @@ namespace WebApiAutores.Controllers
                 //.Include(libroDB => libroDB.Comentarios)
                 .FirstOrDefaultAsync(x => x.Id == id);
 
+            if (libro == null)
+            {
+                return NotFound();
+            }
+
             libro.AutoresLibros = libro.AutoresLibros
                 .OrderBy(al => al.Orden)
                 .ToList();
@@ -125,6 +130,21 @@ namespace WebApiAutores.Controllers
 
             await context.SaveChangesAsync();
             return NoContent();
+        }
+
+        [HttpDelete("{id:int}")]
+        public async Task<ActionResult> Delete(int id)
+        {
+            var existe = await context.Libros.AnyAsync(x => x.Id == id);
+
+            if (!existe)
+            {
+                return NotFound();
+            }
+
+            context.Remove(new Libro() { Id = id });
+            await context.SaveChangesAsync();
+            return Ok();
         }
     }
 }
