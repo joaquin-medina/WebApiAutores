@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
@@ -9,6 +10,7 @@ using System.Text.Json.Serialization;
 using WebApiAutores.Filtros;
 using WebApiAutores.Middlewares;
 using WebApiAutores.Servicios;
+using WebApiAutores.Utilidades;
 
 namespace WebApiAutores
 {
@@ -49,6 +51,8 @@ namespace WebApiAutores
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "WebAPIAutores", Version = "v1" });
+
+                c.OperationFilter<AgregarParametroHATEOAS>();
 
                 c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
                 {
@@ -97,6 +101,10 @@ namespace WebApiAutores
                     builder.WithOrigins("https://www.apirequest.io").AllowAnyMethod().AllowAnyHeader();
                 });
             });
+
+            services.AddTransient<GeneradorEnlaces>();
+            services.AddTransient<HATEOASAutorFilterAttribute>();
+            services.AddSingleton<IActionContextAccessor, ActionContextAccessor>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
